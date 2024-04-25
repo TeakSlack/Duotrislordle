@@ -13,7 +13,7 @@ public class EventSystem {
         subscribers = new HashMap<>();
     }
 
-    public <T> void subscribe(Class<?> eventName, IEventHandler<T> handler) // subscribe handler to event of certain name
+    public <T> void subscribe(Class<?> eventName, IEventHandler<T> handler) // subscribe handler to event of certain class
     {
         List<IEventHandler<?>> handlers = subscribers.getOrDefault(eventName, new ArrayList<>());
         handlers.add(handler);
@@ -21,7 +21,7 @@ public class EventSystem {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> void publish(Class<?> eventName, T data) // publish event of name
+    public <T> void publish(Class<?> eventName, T data) // publish event of class
     {
         List<IEventHandler<?>> handlers = subscribers.getOrDefault(eventName, new ArrayList<>());
         for(IEventHandler<?> handler : handlers)

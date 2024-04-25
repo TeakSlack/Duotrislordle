@@ -1,12 +1,10 @@
 package teak;
 
 import javax.swing.*;
-
-import teak.events.KeystrokeEvent;
-
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import teak.events.KeystrokeEvent;
 
 // Singleton to manage GUI.
 public class AppGUI extends JComponent implements KeyListener {
@@ -49,14 +47,14 @@ public class AppGUI extends JComponent implements KeyListener {
     @Override
     public void keyTyped(KeyEvent e) 
     {
-        // fire keystroke event
-        app.getEventSystem().publish(KeystrokeEvent.class, e);
+        
     }
 
     @Override
     public void keyPressed(KeyEvent e) 
     {
-        
+        // fire keystroke event
+        app.getEventSystem().publish(KeystrokeEvent.class, e);
     }
 
     @Override
