@@ -3,14 +3,19 @@ package teak;
 import teak.events.EventSystem;
 import teak.events.KeystrokeEvent;
 import teak.events.SubmitEvent;
+import teak.render.EndScene;
+import teak.render.IntroScene;
+import teak.render.PlayingScene;
 
 import java.util.ArrayList;
 
 // Singleton to manage game state.
 public class App {
+    // This class being a singleton allows only one instance of itself. 
+    // This avoids duplication of data and allows for easy global state management with a call to App.getInstance()
     private static volatile App instance = null;
 
-    private EventSystem eventSystem;
+    private EventSystem eventSystem; // An events system allows for a decoupled approach to communication.
     private ArrayList<String> guessList;
     private ArrayList<String> answerList;
     private char[] guess;
@@ -34,7 +39,7 @@ public class App {
         return instance;
     }
 
-    private App() // private prevents external initialization of class
+    private App() // private prevents external initialization of class. All true initialization of variables occurs in the run method.
     {
         
     }
@@ -47,6 +52,11 @@ public class App {
         position = 0;
         guess = new char[5];
         numGuesses = 0;
+
+        AppGUI gui = AppGUI.getInstance();
+        gui.addScene("intro", new IntroScene());
+        gui.addScene("playing", new PlayingScene());
+        gui.addScene("end", new EndScene());
 
         registerEvents();
         initWordLists();
@@ -75,9 +85,6 @@ public class App {
             answerStrings[i] = answerList.get(index);
             answerList.remove(index); // remove answers from list to avoid duplication
         }
-
-        for(String answerString : answerStrings) // add answers back
-            answerList.add(answerString);
 
         for(int i = 0; i < answerStrings.length; i++)
         {
@@ -139,6 +146,11 @@ public class App {
 
     public void setGameState(GameState gameState)
     {
+        AppGUI gui = AppGUI.getInstance();
+
+        if(gameState == GameState.INTRO) gui.setScene("intro");
+        else if(gameState == GameState.PLAYING) gui.setScene("playing");
+        else if(gameState == GameState.END) gui.setScene("end");
         this.gameState = gameState;
     }
 
@@ -159,7 +171,7 @@ public class App {
 
     public void setNumGuesses(int numGuesses)
     {
-        if(numGuesses > NUM_GUESSES) gameState = GameState.END; // max number of guesses exceeded
+        if(numGuesses >= NUM_GUESSES) gameState = GameState.END; // max number of guesses exceeded
         this.numGuesses = numGuesses;
     }
 }

@@ -10,22 +10,26 @@ public class KeystrokeEvent implements IEventHandler<KeyEvent> {
         App app = App.getInstance();
 
         if(app.getGameState() == GameState.INTRO)
-            handleIntro(e);
+            handleIntro(e, app);
         else if(app.getGameState() == GameState.PLAYING)
-                handlePlaying(e);
+                handlePlaying(e, app);
         else if(app.getGameState() == GameState.END)
-            handleEnd(e);
+            handleEnd(e, app);
     }
 
-    private void handlePlaying(KeyEvent e)
+    private void handlePlaying(KeyEvent e, App app)
     {
-        App app = App.getInstance();
-
         char[] guess = app.getGuess();
         int position = app.getPosition();
 
         if(e.getKeyCode() == KeyEvent.VK_ENTER && position == 5)
+        {
+            String guessString = "";
+            for(char c : guess) guessString += c;
+            if(!app.getGuessList().contains(guessString.toLowerCase())) return;
+
             app.getEventSystem().publish(SubmitEvent.class, guess);
+        }
 
         if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE && position != 0)
         {
@@ -43,12 +47,12 @@ public class KeystrokeEvent implements IEventHandler<KeyEvent> {
         app.setPosition(position + 1);
     }
 
-    private void handleIntro(KeyEvent e)
+    private void handleIntro(KeyEvent e, App app)
     {
-        App.getInstance().setGameState(GameState.PLAYING);
+        app.setGameState(GameState.PLAYING);
     }
 
-    private void handleEnd(KeyEvent e)
+    private void handleEnd(KeyEvent e, App app)
     {
 
     }
