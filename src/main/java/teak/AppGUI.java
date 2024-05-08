@@ -4,13 +4,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseWheelListener;
+import java.awt.event.MouseWheelEvent;
 import java.util.Map;
 import java.util.HashMap;
 import teak.events.KeystrokeEvent;
 import teak.render.*;
 
 // Singleton to manage GUI.
-public class AppGUI extends JComponent implements KeyListener {
+public class AppGUI extends JComponent implements KeyListener, MouseWheelListener {
     private static volatile AppGUI instance = null;
 
     private App app;
@@ -18,9 +20,11 @@ public class AppGUI extends JComponent implements KeyListener {
     private Map<String, IScene> scenes;
     private IScene scene;
 
-    private static final String TITLE = "Duotrislordle";
-    private static final int WIDTH = 1000;
-    private static final int HEIGHT = 1000;
+    public static final int WIDTH = 1000;
+    public static final int HEIGHT = 1000;
+    public static final int SQUARE_SIZE = 40;
+    public static final int SQUARE_OFFSET = 2;
+    public static final String TITLE = "Duotrislordle";
     public static final Color BG_COLOR = new Color(18,18,19);
     public static final Color ABSENT_COLOR = new Color(58, 58, 60);
     public static final Color WRONGPOS_COLOR = new Color(181, 169, 59);
@@ -95,9 +99,11 @@ public class AppGUI extends JComponent implements KeyListener {
     private void drawBorderedRect(Graphics g, int x, int y, Color color)
     {
         g.setColor(color);
-        g.fillRect(x, y, 100, 100);
+        g.fillRect(x, y, SQUARE_SIZE, SQUARE_SIZE);
         g.setColor(AppGUI.BG_COLOR);
-        g.fillRect(x + 2, y + 2, 100 - (2 * 2), 100 - (2 * 2));
+        g.fillRect(x + 2, y + 2, SQUARE_SIZE - (2 * 2), SQUARE_SIZE - (2 * 2));
+
+        repaint();
     }
 
     public void drawWordleSquare(Graphics g, int x, int y, WordleLetter letter)
@@ -112,12 +118,19 @@ public class AppGUI extends JComponent implements KeyListener {
             if(letter.pos == Position.WRONGPOS) c = WRONGPOS_COLOR;
             if(letter.pos == Position.PRESENT) c = CORRECT_COLOR;
             g.setColor(c);
-            g.fillRect(x, y, 100, 100);
+            g.fillRect(x, y, SQUARE_SIZE, SQUARE_SIZE);
         }
         
         g.setColor(TEXT_COLOR);
-        g.setFont(new Font("Consolas", Font.BOLD, 80));
+        g.setFont(new Font("Consolas", Font.BOLD, 20));
         if(Character.isLetter(letter.letter))
-            g.drawString(Character.toString(letter.letter), x + 25, y + 75);
+            g.drawString(Character.toString(letter.letter), x + 14, y + 30); // rules were made to be broken (line 28 app.java)
+
+        repaint();
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        
     }
 }

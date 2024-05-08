@@ -11,19 +11,22 @@ public class SubmitEvent implements IEventHandler<char[]> {
         App app = App.getInstance();
 
         Position[] correctPos = {Position.PRESENT, Position.PRESENT, Position.PRESENT, Position.PRESENT, Position.PRESENT};
+        char[] empty = {' ', ' ', ' ', ' ', ' '};
 
         int numGuesses = app.getNumGuesses();
         Word[] answers = app.getAnswers();
         boolean allCorrect = true;
+        
+        app.setSingleGuess(numGuesses, new Word(word));
+        app.setGuess(empty);
+        app.setPosition(0);
 
         app.setNumGuesses(numGuesses + 1);
 
-        for(Word answer : answers)
+        for(int i = 0; i < App.WORDLES; i++)
         {
-            Position[] pos = answer.compare(new Word(word));
+            Position[] pos = answers[i].compare(new Word(word));
             if(!pos.equals(correctPos)) allCorrect = false;
-            System.out.print(pos.equals(correctPos) + " ");
-            // TODO: implement rendering code
         }
 
         if(allCorrect) app.setGameState(GameState.END);

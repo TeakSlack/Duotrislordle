@@ -15,7 +15,7 @@ public class App {
     // This avoids duplication of data and allows for easy global state management with a call to App.getInstance()
     private static volatile App instance = null;
 
-    private EventSystem eventSystem; // An events system allows for a decoupled approach to communication.
+    private EventSystem eventSystem; // An events system allows for a decoupled approach to internal communication.
     private ArrayList<String> guessList;
     private ArrayList<String> answerList;
     private char[] guess;
@@ -23,9 +23,11 @@ public class App {
     private Word[] answers;
     private GameState gameState;
     private int numGuesses;
+    private Word[] guesses;
 
-    public static final int NUM_GUESSES = 37;
+    public static final int NUM_GUESSES = 37; // NO HARD CODED VALUES/MAGIC NUMBERS
     public static final int WORD_LENGTH = 5;
+    public static final int WORDLES = 32;
 
     public static App getInstance()
     {
@@ -47,16 +49,20 @@ public class App {
     public void run()
     {
         eventSystem = new EventSystem();
-        answers = new Word[32];
+        answers = new Word[WORDLES];
         gameState = GameState.INTRO;
         position = 0;
         guess = new char[5];
         numGuesses = 0;
+        guesses = new Word[37];
+        guesses[0] = new Word(new char[5]);
 
         AppGUI gui = AppGUI.getInstance();
         gui.addScene("intro", new IntroScene());
         gui.addScene("playing", new PlayingScene());
         gui.addScene("end", new EndScene());
+
+        gui.setScene("intro");
 
         registerEvents();
         initWordLists();
@@ -77,7 +83,7 @@ public class App {
 
     private void initAnswers()
     {
-        String[] answerStrings = new String[32];
+        String[] answerStrings = new String[WORDLES];
 
         for(int i = 0; i < answerStrings.length; i++)
         {
@@ -146,12 +152,13 @@ public class App {
 
     public void setGameState(GameState gameState)
     {
-        AppGUI gui = AppGUI.getInstance();
+        this.gameState = gameState;
 
+        AppGUI gui = AppGUI.getInstance();
         if(gameState == GameState.INTRO) gui.setScene("intro");
         else if(gameState == GameState.PLAYING) gui.setScene("playing");
         else if(gameState == GameState.END) gui.setScene("end");
-        this.gameState = gameState;
+        gui.repaint();
     }
 
     public int getPosition()
@@ -173,5 +180,20 @@ public class App {
     {
         if(numGuesses >= NUM_GUESSES) gameState = GameState.END; // max number of guesses exceeded
         this.numGuesses = numGuesses;
+    }
+
+    public Word[] getGuesses()
+    {
+        return guesses;
+    }
+
+    public void setGuesses(Word[] guesses)
+    {
+        this.guesses = guesses;
+    }
+
+    public void setSingleGuess(int index, Word guess)
+    {
+        this.guesses[index] = guess;
     }
 }

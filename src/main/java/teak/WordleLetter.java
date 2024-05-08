@@ -8,4 +8,10 @@ public class WordleLetter {
     {
         pos = Position.INITIAL;
     }
+
+    public WordleLetter(Position pos, char letter)
+    {
+        this.pos = pos;
+        this.letter = letter;
+    }
 }
