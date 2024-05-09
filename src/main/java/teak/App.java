@@ -24,6 +24,7 @@ public class App {
     private GameState gameState;
     private int numGuesses;
     private Word[] guesses;
+    private int wordlesSolved;
 
     public static final int NUM_GUESSES = 37; // NO HARD CODED VALUES/MAGIC NUMBERS
     public static final int WORD_LENGTH = 5;
@@ -56,6 +57,7 @@ public class App {
         numGuesses = 0;
         guesses = new Word[37];
         guesses[0] = new Word(new char[5]);
+        wordlesSolved = 0;
 
         AppGUI gui = AppGUI.getInstance();
         gui.addScene("intro", new IntroScene());
@@ -196,4 +198,14 @@ public class App {
     {
         this.guesses[index] = guess;
     }
+
+    public int getWordlesSolved()
+    {
+        return wordlesSolved;
+    }
+
+    public void setWordlesSolved(int wordlesSolved)
+    {
+        this.wordlesSolved = wordlesSolved;
+    }   
 }

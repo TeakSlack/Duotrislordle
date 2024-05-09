@@ -19,6 +19,7 @@ public class AppGUI extends JComponent implements KeyListener, MouseWheelListene
     private JFrame frame;
     private Map<String, IScene> scenes;
     private IScene scene;
+    private double yOffset;
 
     public static final int WIDTH = 1000;
     public static final int HEIGHT = 1000;
@@ -48,10 +49,12 @@ public class AppGUI extends JComponent implements KeyListener, MouseWheelListene
         app = App.getInstance();
 
         scenes = new HashMap<>();
+        yOffset = 0;
 
         frame = new JFrame(TITLE);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.addKeyListener(this);
+        frame.addMouseWheelListener(this);
         frame.setResizable(true);
         frame.getContentPane().add(this);
         frame.getContentPane().setBackground(BG_COLOR);
@@ -131,6 +134,21 @@ public class AppGUI extends JComponent implements KeyListener, MouseWheelListene
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        
+        if(yOffset >= 0 && e.getPreciseWheelRotation() > 0) 
+        {
+            yOffset = 0;
+            return;
+        }
+
+        // if(yOffset * 16 <= -yMax && e.getPreciseWheelRotation() < 0) {
+        //     return;
+        // }
+
+        yOffset += e.getPreciseWheelRotation() * 12;
+    }
+
+    public int getYOffset()
+    {
+        return (int)yOffset;
     }
 }

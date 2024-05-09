@@ -3,14 +3,12 @@ package teak.events;
 import teak.App;
 import teak.GameState;
 import teak.Word;
-import teak.Position;
 
 public class SubmitEvent implements IEventHandler<char[]> {
     public void handleEvent(char[] word)
     {
         App app = App.getInstance();
 
-        Position[] correctPos = {Position.PRESENT, Position.PRESENT, Position.PRESENT, Position.PRESENT, Position.PRESENT};
         char[] empty = {' ', ' ', ' ', ' ', ' '};
 
         int numGuesses = app.getNumGuesses();
@@ -23,12 +21,15 @@ public class SubmitEvent implements IEventHandler<char[]> {
 
         app.setNumGuesses(numGuesses + 1);
 
+        int amountCorrect = 0;
+
         for(int i = 0; i < App.WORDLES; i++)
         {
-            Position[] pos = answers[i].compare(new Word(word));
-            if(!pos.equals(correctPos)) allCorrect = false;
+            if(answers[i].equals(new Word(word))) amountCorrect++;
+            else allCorrect = false;
         }
 
+        app.setWordlesSolved(amountCorrect);
         if(allCorrect) app.setGameState(GameState.END);
     }
 }

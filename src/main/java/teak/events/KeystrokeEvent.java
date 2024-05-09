@@ -25,7 +25,7 @@ public class KeystrokeEvent implements IEventHandler<KeyEvent> {
         if(e.getKeyCode() == KeyEvent.VK_ENTER && position == 5)
         {
             String guessString = "";
-            for(char c : guess) guessString += c;
+            for(char c : guess) guessString += Character.toUpperCase(c);
             if(!app.getGuessList().contains(guessString.toLowerCase())) return;
 
             app.getEventSystem().publish(SubmitEvent.class, guess);
